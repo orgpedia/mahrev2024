@@ -1,0 +1,51 @@
+name: translateGR
+
+on:
+  schedule:
+    - cron: '30 21 * * *'  # Runs at 21:30 UTC, which is 3:00 AM IST
+
+  # push:
+  #   branches: [ main ]
+
+jobs:
+  process_GRs:
+    runs-on: ubuntu-latest
+    outputs:
+      commit_hash: ${{ steps.commit-and-push.outputs.commit_hash }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+            python-version: '3.8'  # specify your Python version
+
+      - name: Install Poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python3 -
+          echo "$HOME/.poetry/bin" >> $GITHUB_PATH
+
+      - name: Install dependencies
+        run: make install
+
+      - name: Install tesseract binaries
+        run: make install-tess
+
+      - name: Import new infos, download and link
+        run: make import
+
+      - name: Extract, translate
+        run: make flow
+
+      - name: Export
+        run: make export
+
+      - name: Commit and push changes
+        id: commit-and-push
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: actions export

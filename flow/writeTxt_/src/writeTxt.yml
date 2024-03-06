@@ -1,0 +1,46 @@
+description: This folder(task) runs the cid extractor, extracts tables and paragraphs, translates them and writes as a text file.
+
+ignore_docs: [ ]
+
+output_dir: 'output'
+config_dir: 'conf'
+output_stub: 'doc'
+
+pipeline:
+  - name: pdf_cid_info
+
+  - name: pdf_cid_reader
+    config:
+        swap_cids: [['sakalmarathi', 66, 126]] # u and dot (mumbai)
+
+  - name: word_recognizer
+
+  - name: pdftable_finder
+    config:
+      skip_row_with_merged_cells: False
+      heading_offset: 0 # ignore heading
+      header_row: never
+      pdfplumber_config:
+        vertical_strategy: lines
+        horizontal_strategy: lines
+
+  - name: line_finder
+    config:
+      keep_empty_lines: True
+      quick: True
+      newline_height_multiple: 1.6
+
+  - name: para_finder
+    config:
+      write_output: False
+
+  - name: extract_order_number      
+
+  - name: doc_translator_hf
+    config:
+      src_lang: 'mar_Deva'
+      tgt_lang: 'eng_Latn'
+
+  - name: text_writer
+    config:
+      languages: ['en', 'mr']
