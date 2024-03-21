@@ -6,7 +6,7 @@ export PYTHONPATH := $(ROOT_DIR)/../src:$(PYTHONPATH)
 .PHONY: all
 
 all:
-	poetry run python src/writeTxt.py input output > logs/info.txt
+	poetry run python src/writeTxt.py input output
 
 %:
 	poetry run python src/writeTxt.py input/$@.pdf output/$@.pdf.doc.json
