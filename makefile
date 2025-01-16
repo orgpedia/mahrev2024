@@ -25,7 +25,8 @@ help:
 	@echo # dummy command
 
 install: pyproject.toml
-	poetry install --only=dev
+	uv sync
+	uv venv -p python310
 
 install-tess:
 	sudo apt-get install tesseract-ocr-all -y
@@ -35,21 +36,21 @@ import/documents/all_infos.json:
 
 import: import/documents/all_infos.json
 	$(info running import)
-	poetry run python import/src/build_documents.py import/documents/all_infos.json import/documents/documents.json flow/writeTxt_/input
+	uv run python import/src/build_documents.py import/documents/all_infos.json import/documents/documents.json flow/writeTxt_/input
 
 
 flow: $(tasks)
 $(tasks):
-	poetry run make -C $@
+	uv run make -C $@
 
 lint:
-	poetry run ruff .
+	uv run ruff .
 
 format:
-	poetry run ruff format .
+	uv run ruff format .
 
 export: 
-	poetry run python flow/src/export.py import/documents flow/writeTxt_ export/orgpedia_mahrev2024
+	uv run python flow/src/export.py import/documents flow/writeTxt_ export/orgpedia_mahrev2024
 
 
 # Use pre-commit if there are lots of edits,

@@ -1,58 +1,68 @@
-[tool.poetry]
+[project]
 name = "orgpedia-mahrev2024"
 version = "0.0.1"
 description = "Datapackage containing orders of Revenue and Forest Department Government of Maharashtra."
-authors = ["Orgpedia Foundation <orgpedia.foundation@gmail.com>"]
-license = "MIT"
+authors = [{ name = "Orgpedia Foundation", email = "orgpedia.foundation@gmail.com" }]
+requires-python = ">=3.10"
 readme = "README.md"
-keywords = ["information extraction", "data package", "government data"]
-classifiers=[
-    'Development Status :: 2 - Pre-Alpha',
-    'Intended Audience :: Developers',
-    'License :: OSI Approved :: MIT License',
-    'Natural Language :: English',
-    'Programming Language :: Python :: 3',
-    'Programming Language :: Python :: 3.8',
-    'Programming Language :: Python :: 3.9',
-    'Programming Language :: Python :: 3.10',
-    'Programming Language :: Python :: 3.11',
-    'Topic :: Scientific/Engineering :: Artificial Intelligence',
-    'Topic :: Scientific/Engineering :: Information Analysis',
-
+license = "MIT"
+keywords = [
+    "information extraction",
+    "data package",
+    "government data",
+]
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Natural Language :: English",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Scientific/Engineering :: Information Analysis",
 ]
 
-packages = [ { include = "orgpedia_mahrev2024", from = "export" } ]
-include = [ "export/orgpedia_mahrev2024/*" ]
-
-[tool.poetry.urls]
-"homepage" = "https://www.orgpedia.in/"
-"repository" = "https://github.com/orgpedia/mahrev2024"
+[project.urls]
+homepage = "https://www.orgpedia.in/"
+repository = "https://github.com/orgpedia/mahrev2024"
 "data issues" = "https://github.com/orgpedia/mahrev2024/discussions"
 
-[tool.poetry.dependencies]
-python = ">3.8.1 <4.0"
+[dependency-groups]
+dev = [
+    "pdfplumber>=0.9.0,<0.10",
+    "requests>=2.31.0,<3",
+    "pytesseract>=0.3.10,<0.4",
+    "docint",
+    "ruff>=0.2.2,<0.3",
+    "pre-commit>=2.21.0,<3",
+    "translateindic",
+    "orgpedia",
+]
 
-# this is a datapackage should not have any dependency as we are publishing data
-# dependencies for running the flow are in group.dev.dependencies
+[tool.uv.sources]
+docint = { git = "https://github.com/mukundesh/docInt.git" }
+translateindic = { git = "https://github.com/orgpedia/translateIndic" }
+orgpedia = { git = "https://github.com/orgpedia/orgpedia.git" }
 
+[tool.hatch.build.targets.sdist]
+include = [
+    "export/orgpedia_mahrev2024",
+    "export/orgpedia_mahrev2024/*",
+]
 
-[tool.poetry.group.dev]
-optional = true
+[tool.hatch.build.targets.wheel]
+include = [
+    "export/orgpedia_mahrev2024",
+    "export/orgpedia_mahrev2024/*",
+]
 
-[tool.poetry.group.dev.dependencies]
-pdfplumber = "^0.9.0"
-requests = "^2.31.0"
-pytesseract = "^0.3.10"
-
-docint = {git = "https://github.com/mukundesh/docInt.git"}
-ruff = "^0.2.2"
-pre-commit = "^2.21.0" 
-translateindic = {git = "https://github.com/orgpedia/translateIndic"}
-orgpedia = {git = "https://github.com/orgpedia/orgpedia.git"}
+[tool.hatch.build.targets.wheel.sources]
+"export/orgpedia_mahrev2024" = "orgpedia_mahrev2024"
 
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 [tool.ruff]
 # Enable Pyflakes `E` and `F` codes by default.
@@ -62,6 +72,7 @@ lint.ignore = []
 # Allow autofix for all enabled rules (when `--fix`) is provided.
 lint.fixable = ["I001"] # fix only isort issues
 lint.unfixable = []
+lint.per-file-ignores = {}
 
 # Exclude a variety of commonly ignored directories.
 exclude = [
@@ -87,7 +98,6 @@ exclude = [
     "page_images",
     "html",
 ]
-lint.per-file-ignores = {}
 
 # Same as Black.
 line-length = 100
@@ -95,5 +105,4 @@ line-length = 100
 # Allow unused variables when underscore-prefixed.
 #dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
 
-# Assume Python 3.8
-target-version = "py38"
+target-version = "py310"
