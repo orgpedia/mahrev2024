@@ -4,8 +4,8 @@ on:
   schedule:
     - cron: '30 21 * * *'  # Runs at 21:30 UTC, which is 3:00 AM IST
 
-  # push:
-  #   branches: [ main ]
+  push:
+    branches: [ main ]
 
 jobs:
   process_GRs:
@@ -39,6 +39,8 @@ jobs:
         run: make import
 
       - name: Extract, translate
+        env:
+          HF_TOKEN: ${{ secrets.HF_READ_TOKEN }}
         run: make flow
 
       - name: Export
